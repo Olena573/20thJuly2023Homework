@@ -34,19 +34,19 @@ public class Main {
                new User ("Dmytro", "Myronenko", 21, "cyberdmytro@ukr.net"),
                new User ("Larysa", "Matviyenko", 25, "panimatviyenko@gmail.com"),
                new User ("Ilona", "Moskalenko", 29, "Ilona2000@ukr.net"));
-       //Here a new List of users was created and filled with data using Stream.
+       //Here a new List of users was created and filled with data.
         System.out.println("Here is a list of distinct surnames for task 1: ");
-                someUsers.stream().filter(age -> age.getAge()>25)
+        someUsers.stream().filter(age -> age.getAge()>25)
                 //here we filter users by age: all users older than 25 years will be used further
-                        .map(User::getSurname)
-                        //here we noted that only surnames will be used.
-                        .distinct()
-                        //here we use distinct () method to print out only distinct data;
-                        .forEach(System.out::println);
-                //Here we "print" them on the screen.
+                .map(User::getSurname)
+                //here we noted that only surnames will be used.
+                .distinct()
+                //here we use distinct () method to print out only distinct data;
+                .forEach(System.out::println);
+        //Here we "print" them on the screen.
         // So a list of distinct surnames for users older than 25 years is printed out.
 
-        // Task 2 (which requires to use Optional).
+        // Task 2 (which requires to use Optional by definition).
         System.out.println("Here is a result for task 2: ");
         Optional<Object> filteredNames = Optional.ofNullable(someUsers.stream()
                 .filter(surname -> surname.surnameLength() < 8)
@@ -61,12 +61,13 @@ public class Main {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        //Here is a method with the Exception for the case of 0 results;
 
         System.out.println("A list of names of users with surnames shorter than 8 symbols.");
 
         // Task 3
         System.out.println("Here is a list of sorted years of births for task 3: ");
-        List <Integer> listOfYears = someUsers.stream()
+        Optional<Object> filteredYears = Optional.ofNullable(someUsers.stream()
                 .filter(email -> email.emailLength()>19)
                 //here we filtered users who have email length more than 19.
                 .skip (3)
@@ -76,9 +77,16 @@ public class Main {
                 .sorted()
                 //Here we sorted results. As we sort Integer values, a simple "sorted()" method is used.
                 //In other cases, comparators or comparable should be used.
-                .collect(Collectors.toList());
+                //I did'n add a "distinct()" method, so names of users will be repeated.
+                .collect(Collectors.toList()));
                 //Here we created a new list.
-        listOfYears.stream().forEach(System.out::println);
+        try {
+            System.out.println(filteredYears.orElseThrow(() -> new RuntimeException(
+                    "We skipped all users, or all emails are shorter than 19 symbols.")));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        //listOfYears.stream().forEach(System.out::println);
         // Here we printed out this new list;
 
         //So here is a sorted list of years of birth for users, whose email is longer than 19 symbols.
@@ -104,6 +112,11 @@ public class Main {
         // і методи стрімів. Методи Optional це: get (), orElse (), orElseGet (), orElseThrow (), isPresent ().
         //Optional - це підвид Stream, і інші методи в нього такі ж як в Stream.
         //orElseThrow дозволяє викинути Exception.
+
+
+        //In this homework I've used Optionals for tasks 2 and 3, because it has Exceptions.
+        // In task 1 was specified that it should be done with Streams.
+        // So I left it with a Stream, without creating an Optional.
 
 
 
