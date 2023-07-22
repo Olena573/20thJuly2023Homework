@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,16 +48,26 @@ public class Main {
 
         // Task 2 (which requires to use Optional).
         System.out.println("Here is a result for task 2: ");
-        someUsers.stream().filter(surname -> surname.surnameLength()<8)
+        Optional<Object> filteredNames = Optional.ofNullable(someUsers.stream()
+                .filter(surname -> surname.surnameLength() < 8)
                 //Here we get users with surnames shorter than 8 symbols;
                 .map(User::getName)
+                .collect(Collectors.toList()));
                 //here we take only names of users;
-                .forEach(System.out::println);
+                // I had to use a collector, so the output worked fine.
+
+        try {
+            System.out.println(filteredNames.orElseThrow(() -> new RuntimeException("0 users have surnames shorter than 8 symbols.")));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         System.out.println("A list of names of users with surnames shorter than 8 symbols.");
 
         // Task 3
         System.out.println("Here is a list of sorted years of births for task 3: ");
-        someUsers.stream().filter(email -> email.emailLength()>19)
+        List <Integer> listOfYears = someUsers.stream()
+                .filter(email -> email.emailLength()>19)
                 //here we filtered users who have email length more than 19.
                 .skip (3)
                 //Here we skipped first 3 results;
@@ -65,7 +76,11 @@ public class Main {
                 .sorted()
                 //Here we sorted results. As we sort Integer values, a simple "sorted()" method is used.
                 //In other cases, comparators or comparable should be used.
-                .forEach(System.out::println);
+                .collect(Collectors.toList());
+                //Here we created a new list.
+        listOfYears.stream().forEach(System.out::println);
+        // Here we printed out this new list;
+
         //So here is a sorted list of years of birth for users, whose email is longer than 19 symbols.
         System.out.println("Emails of these users are longed than 19 symbols; first 3 users were skipped.");
 
@@ -84,10 +99,12 @@ public class Main {
         // раз по разу віднімаючи 1. І для цього вона викликатиме саму себе. Головне - прописати умову виходу
         // з рекурсії. Інакше вона так і рахуватиме, весь час щось множачи або віднімаючи.
         // Різниця Optional і Stream полягає в тому, що Optional працює з exceptions, а Stream - ні.
-        // Також у Optional не так багато власних методів (), але можна викликати методи Stream.
+        // Також у Optional можна викликати методи Stream.
         // Через відсутність у стрімах роботи з exceptions, краще робити Optional, що викликатимуть за потреби стріми
         // і методи стрімів. Методи Optional це: get (), orElse (), orElseGet (), orElseThrow (), isPresent ().
-        // У стрімів інші методи.
+        //Optional - це підвид Stream, і інші методи в нього такі ж як в Stream.
+        //orElseThrow дозволяє викинути Exception.
+
 
 
 
